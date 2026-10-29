@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="icon.png">
+<title>ЧимаТВ — кино на телевизоре</title>
+<meta name="description" content="Чима найдёт фильм, а вы смотрите его на телевизоре. Всё — через Telegram или ВКонтакте, без сложных настроек.">
+<meta property="og:title" content="ЧимаТВ — кино на телевизоре">
+<meta property="og:description" content="Напишите Чиме название фильма — и смотрите на большом экране.">
+<meta property="og:image" content="img/hello.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;800&display=swap">
+<style>
+:root{
+  --bg:#0f1218; --panel:#1a2029; --panel2:#222a35; --text:#f4f1ea; --muted:#a9b0bc;
+  --gold:#ffb300; --gold2:#ffd36b; --tg:#2aa3e0; --vk:#0077ff; --ok:#7ad35a; --radius:22px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:400 19px/1.55 Onest,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+img{max-width:100%;height:auto;display:block}
+a{color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+h1,h2,h3{line-height:1.15;margin:0}
+h1{font-size:clamp(34px,6vw,58px);font-weight:800;letter-spacing:-.02em}
+h2{font-size:clamp(28px,4.4vw,40px);font-weight:800;letter-spacing:-.01em;margin-bottom:10px}
+h3{font-size:22px;font-weight:800}
+p{margin:0}
+.gold{color:var(--gold)}
+.lead{color:var(--muted);font-size:20px;max-width:34em}
+
+/* шапка */
+header{position:sticky;top:0;z-index:10;background:rgba(15,18,24,.92);backdrop-filter:blur(8px);border-bottom:1px solid #ffffff10}
+header .wrap{display:flex;align-items:center;gap:12px;height:68px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:800;font-size:24px}
+.logo img{width:44px;height:44px;border-radius:12px}
+header .nav{margin-left:auto;display:flex;gap:18px}
+header .nav a{color:var(--muted);text-decoration:none;font-weight:600;font-size:17px}
+header .nav a:hover{color:var(--gold)}
+
+/* кнопки */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;font-weight:800;
+  border-radius:999px;padding:18px 28px;font-size:20px;border:0;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn:focus-visible{outline:3px solid var(--gold2);outline-offset:3px}
+.btn-tg{background:var(--tg);color:#fff;box-shadow:0 8px 24px #2aa3e044}
+.btn-vk{background:var(--vk);color:#fff;box-shadow:0 8px 24px #0077ff44}
+.btn-gold{background:var(--gold);color:#241800;box-shadow:0 8px 24px #ffb30040}
+.btn-ghost{background:var(--panel2);color:var(--text)}
+.btns{display:flex;flex-wrap:wrap;gap:14px;margin-top:28px}
+
+/* первый экран */
+.hero{padding:56px 0 40px}
+.hero .wrap{display:flex;align-items:center;gap:40px}
+.hero-text{flex:1;min-width:0}
+.hero .lead{margin-top:18px}
+.hero-pic{flex:0 0 auto;width:300px;filter:drop-shadow(0 18px 36px #0009)}
+
+section{padding:64px 0}
+.center{text-align:center}
+.center .lead{margin:0 auto}
+
+/* что умею */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:34px}
+.card{background:var(--panel);border-radius:var(--radius);padding:18px 18px 24px;text-align:center}
+.card img{height:170px;width:auto;margin:0 auto 10px;object-fit:contain}
+.card p{color:var(--muted);margin-top:8px;font-size:17px}
+
+/* шаги */
+.steps{display:grid;gap:18px;margin-top:34px}
+.step{display:grid;grid-template-columns:72px 1fr 180px;gap:20px;align-items:center;background:var(--panel);border-radius:var(--radius);padding:20px 24px}
+.num{width:64px;height:64px;border-radius:50%;background:var(--gold);color:#241800;font-weight:800;font-size:32px;display:grid;place-items:center}
+.step p{color:var(--muted);margin-top:6px}
+.step img{height:150px;width:auto;justify-self:center;object-fit:contain}
+.step .btn{margin-top:14px;padding:12px 20px;font-size:17px}
+.hint{background:var(--panel2);border-radius:14px;padding:12px 16px;margin-top:12px;color:var(--muted);font-size:17px}
+.hint b{color:var(--text)}
+
+/* смотреть фильм */
+.watch{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:30px;counter-reset:w}
+.watch div{background:var(--panel);border-radius:18px;padding:18px;position:relative}
+.watch div::before{counter-increment:w;content:counter(w);display:block;color:var(--gold);font-weight:800;font-size:28px;line-height:1;margin-bottom:8px}
+.watch div p{color:var(--muted);font-size:17px}
+.pill{display:inline-block;background:var(--panel2);border-radius:10px;padding:2px 10px;color:var(--text);font-weight:600;white-space:nowrap}
+
+/* telegram или вк */
+.compare{width:100%;max-width:760px;margin:30px auto 0;border-collapse:separate;border-spacing:0;background:var(--panel);border-radius:var(--radius);overflow:hidden;text-align:left}
+.compare th,.compare td{padding:14px 18px;border-bottom:1px solid #ffffff0d}
+.compare tr:last-child td{border-bottom:0}
+.compare th{font-size:18px;font-weight:800;background:var(--panel2)}
+.compare th:nth-child(n+2),.compare td:nth-child(n+2){text-align:center;width:130px}
+.compare th.tg{color:var(--tg)}
+.compare th.vk{color:#4c9bff}
+.compare td{color:var(--muted);font-size:17px}
+.compare .y{color:var(--ok);font-weight:800;font-size:22px}
+.compare .n{color:#ffffff40;font-size:22px}
+.btns.mid{justify-content:center}
+.note{display:grid;grid-template-columns:150px 1fr;gap:20px;align-items:center;background:var(--panel);border-radius:var(--radius);padding:20px 24px;margin:26px auto 0;max-width:760px;text-align:left}
+.note img{width:150px;height:auto}
+.note p{color:var(--muted);margin-top:6px;font-size:17px}
+
+/* откуда смотреть, сохранить */
+h3.sub{margin-top:44px;font-size:26px}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px;text-align:left}
+.opt{background:var(--panel);border-radius:18px;padding:20px;border:2px solid transparent}
+.opt h3{font-size:20px}
+.opt p{color:var(--muted);font-size:17px;margin-top:8px}
+.opt .tag{display:inline-block;margin-top:12px;font-size:15px;color:var(--gold2)}
+.save{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:30px}
+.save .opt{display:grid;grid-template-columns:110px 1fr;gap:16px;align-items:start}
+.save img{width:110px;height:auto}
+.small{color:var(--muted);font-size:16px;margin-top:16px}
+
+/* помощь */
+.faq{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:30px}
+.qa{display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:center;background:var(--panel);border-radius:var(--radius);padding:18px}
+.qa img{width:120px;height:120px;object-fit:contain}
+.qa p{color:var(--muted);margin-top:6px;font-size:17px}
+
+.final{background:linear-gradient(180deg,var(--panel),var(--bg));border-radius:32px;padding:40px 28px;display:grid;grid-template-columns:220px 1fr;gap:24px;align-items:center}
+footer{padding:30px 0 50px;color:var(--muted);font-size:15px;text-align:center}
+
+@media (max-width:900px){
+  .hero-pic{width:220px}
+  .cards,.watch{grid-template-columns:1fr 1fr}
+  .faq,.opts,.save{grid-template-columns:1fr}
+}
+@media (max-width:620px){
+  body{font-size:18px}
+  section{padding:44px 0}
+  .btn{width:100%;font-size:18px;padding:16px 20px;text-align:center}
+  .hero{padding:28px 0 20px}
+  .hero .wrap{flex-direction:column-reverse;gap:8px;text-align:center}
+  .hero .lead{margin:14px auto 0}
+  .hero-pic{width:170px}
+  header .nav a:not(.main){display:none}
+  .cards{grid-template-columns:1fr 1fr;gap:12px}
+  .card img{height:120px}
+  .step{grid-template-columns:56px 1fr;padding:18px}
+  .num{width:52px;height:52px;font-size:26px}
+  .step img{display:none}
+  .watch{grid-template-columns:1fr}
+  .qa{grid-template-columns:84px 1fr}
+  .compare th,.compare td{padding:12px 10px}
+  .compare th:nth-child(n+2),.compare td:nth-child(n+2){width:auto}
+  .compare th{font-size:15px}
+  .note{grid-template-columns:1fr;text-align:center}
+  .note img{width:120px;margin:0 auto}
+  .save .opt{grid-template-columns:72px 1fr}
+  .save img{width:72px}
+  .qa img{width:84px;height:84px}
+  .final{grid-template-columns:1fr;text-align:center}
+  .final img{max-width:180px;margin:0 auto}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="logo" href="#"><img src="icon.png" alt=""><span>Чима<span class="gold">ТВ</span></span></a>
+    <nav class="nav"><a href="#can">Возможности</a><a class="main" href="#start">Как начать</a><a href="#watch">Как смотреть</a><a href="#help">Помощь</a></nav>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-text">
+      <h1>Кино на телевизоре — <span class="gold">проще простого</span></h1>
+      <p class="lead">Напишите Чиме название фильма в Telegram или ВКонтакте. Он найдёт, а вы посмотрите на большом экране. Ничего настраивать не нужно.</p>
+      <div class="btns">
+        <a class="btn btn-tg" href="https://t.me/cheematvbot">💬 Telegram</a>
+        <a class="btn btn-vk" href="https://vk.me/club242499093">💬 ВКонтакте</a>
+        <a class="btn btn-ghost" href="#start">Как начать?</a>
+      </div>
+    </div>
+    <img class="hero-pic" src="img/hello.webp" alt="Такса Чима машет лапой">
+  </div>
+</section>
+
+<section id="can">
+  <div class="wrap center">
+    <h2>Что я умею</h2>
+    <p class="lead">Всё делается кнопками в Telegram или ВКонтакте — как обычная переписка.</p>
+    <div class="cards">
+      <div class="card"><img src="img/search.webp" alt="" loading="lazy"><h3>Найду фильм</h3><p>Напишите название — покажу, что нашлось.</p></div>
+      <div class="card"><img src="img/library.webp" alt="" loading="lazy"><h3>Покажу на телевизоре</h3><p>Фильм сам появится в приложении ЧимаТВ.</p></div>
+      <div class="card"><img src="img/saved.webp" alt="" loading="lazy"><h3>Сохраню в памяти</h3><p>Смотрите без интернета — хоть на даче.</p></div>
+      <div class="card"><img src="img/tv.webp" alt="" loading="lazy"><h3>Найду прямо на ТВ</h3><p>Кнопка «🔍 Найти» в приложении — телефон не нужен.</p></div>
+      <div class="card"><img src="img/telegram.webp" alt="" loading="lazy"><h3>Пришлю в Telegram</h3><p>Смотрите на телефоне — даже без интернета.</p></div>
+      <div class="card"><img src="img/video.webp" alt="" loading="lazy"><h3>Скачаю видео</h3><p>С YouTube, VK, Instagram — просто пришлите ссылку.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="start">
+  <div class="wrap">
+    <div class="center">
+      <h2>Как начать — <span class="gold">3 шага</span></h2>
+      <p class="lead">Делается один раз. Дальше — только смотреть.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="num">1</div>
+        <div>
+          <h3>Напишите мне в Telegram или ВКонтакте</h3>
+          <p>Нажмите кнопку ниже, потом «Старт» (в Telegram) или «Начать» (во ВКонтакте). Я попрошу разрешения у хозяина — обычно это быстро. Когда разрешит, я напишу.</p>
+          <div class="btns" style="margin-top:14px">
+            <a class="btn btn-tg" href="https://t.me/cheematvbot">💬 Telegram</a>
+            <a class="btn btn-vk" href="https://vk.me/club242499093">💬 ВКонтакте</a>
+          </div>
+        </div>
+        <img src="img/hello.webp" alt="" loading="lazy">
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <div>
+          <h3>Поставьте приложение на телевизор</h3>
+          <p>Подойдёт телевизор или приставка с Android TV (Sony, Philips, TCL, Xiaomi Mi Box и другие).</p>
+          <div class="hint"><b>Самый простой способ.</b> На телевизоре откройте магазин приложений Google Play, найдите и установите программу <b>Downloader</b>. Откройте её и наберите пультом адрес <b>cheema.tv</b> — откроется этот сайт. Нажмите жёлтую кнопку «Скачать приложение».</div>
+          <div class="hint"><b>Или с телефона через LocalSend.</b> Установите бесплатное приложение <b>LocalSend</b> на телевизор (из Google Play) и на телефон. На телефоне скачайте файл кнопкой ниже или получите его в боте кнопкой <span class="pill">📱 Приложение</span>. Откройте LocalSend на телефоне, выберите этот файл и отправьте на телевизор — телефон и телевизор должны быть в одной сети Wi-Fi. На телевизоре примите файл и откройте его.</div>
+          <div class="hint"><b>Телевизор спросит разрешение на установку</b> — одобряйте, Чима не кусается! Дайте ему все нужные разрешения.</div>
+          <a class="btn btn-gold" href="https://github.com/papapa228/CheemaTV/releases/latest/download/ChimaTV.apk">📺 Скачать приложение</a>
+        </div>
+        <img src="img/app.webp" alt="" loading="lazy">
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <div>
+          <h3>Соедините телевизор со мной</h3>
+          <p>Запустите ЧимаТВ на телевизоре и откройте ⚙ Настройки. Там два QR-кода — <b>Telegram</b> и <b>ВКонтакте</b>. Наведите камеру телефона на тот, где вы пишете Чиме, и нажмите «Старт» или «Начать» — телевизор привяжется к вам сам.</p>
+          <div class="hint"><b>Несколько телевизоров?</b> Привяжите каждый так же. Посмотреть список, переименовать или отвязать телевизор: во ВКонтакте — кнопка <span class="pill">📺 Мои телевизоры</span>, в Telegram — команда <span class="pill">/tv</span>.</div>
+        </div>
+        <img src="img/qr.webp" alt="" loading="lazy">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="vk">
+  <div class="wrap center">
+    <h2>Telegram или ВКонтакте — <span class="gold">где удобнее</span></h2>
+    <p class="lead">Чима отвечает и там, и там. Во ВКонтакте — всё нужное для телевизора, в Telegram — ещё и скачивание на телефон.</p>
+    <table class="compare">
+      <thead><tr><th>Что умеет Чима</th><th class="tg">Telegram</th><th class="vk">ВКонтакте</th></tr></thead>
+      <tbody>
+        <tr><td>Найти фильм или сериал</td><td class="y">✓</td><td class="y">✓</td></tr>
+        <tr><td>Добавить в медиатеку ТВ</td><td class="y">✓</td><td class="y">✓</td></tr>
+        <tr><td>Сохранить в облако</td><td class="y">✓</td><td class="y">✓</td></tr>
+        <tr><td>Мои телевизоры</td><td class="y">✓</td><td class="y">✓</td></tr>
+        <tr><td>Поддержка</td><td class="y">✓</td><td class="y">✓</td></tr>
+        <tr><td>Скачать фильм в Telegram</td><td class="y">✓</td><td class="n">—</td></tr>
+        <tr><td>Видео по ссылке (YouTube, VK, Instagram)</td><td class="y">✓</td><td class="n">—</td></tr>
+      </tbody>
+    </table>
+    <div class="note">
+      <img src="img/done.webp" alt="" loading="lazy">
+      <div>
+        <h3>Пишете и там, и там? Свяжите аккаунты</h3>
+        <p>Тогда список фильмов и телевизоры станут общими. Во ВКонтакте нажмите <span class="pill">🔗 Связь с Telegram</span> — Чима пришлёт 6 цифр. Отправьте их Telegram-боту вот так: <span class="pill">/vk 123456</span> (цифры — ваши). Код действует 10 минут.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="watch">
+  <div class="wrap center">
+    <h2>Как посмотреть фильм</h2>
+    <p class="lead">Пока вы идёте к дивану, фильм уже ждёт на телевизоре.</p>
+    <div class="watch" style="text-align:left">
+      <div><p>Нажмите <span class="pill">🔍 Поиск</span> в Telegram или ВКонтакте и напишите название. Или кнопку <span class="pill">🔍 Найти</span> прямо на телевизоре.</p></div>
+      <div><p>Выберите фильм из списка. В поиске на телевизоре раздачи с пометкой «✓ под ваш экран» — экономнее: лучше картинка всё равно не станет, а трафика уйдёт меньше.</p></div>
+      <div><p>Нажмите <span class="pill">📺 Добавить в медиатеку ТВ</span></p></div>
+      <div><p>На телевизоре откройте фильм, выберите, откуда смотреть, и нажмите <span class="pill">▶ Смотреть</span></p></div>
+    </div>
+
+    <h3 class="sub">Откуда смотреть</h3>
+    <p class="lead" style="margin-top:8px">Под кнопкой «Смотреть» — варианты. Выберите один, Чима запомнит выбор для этого фильма.</p>
+    <div class="opts">
+      <div class="opt"><h3>⚡ С торрента</h3><p>Фильм подгружается из интернета прямо на телевизор. Включается за несколько секунд — подходит почти всегда.</p><span class="tag">сразу</span></div>
+      <div class="opt"><h3>☁ С облака</h3><p>Сначала фильм подтянет сервер Чимы, потом он пойдёт на телевизор. Выручает, если «С торрента» тормозит или не включается. Если фильм уже в облаке — включается сразу.</p><span class="tag">+3 минуты · если хозяин включил вам облако</span></div>
+      <div class="opt"><h3>💾 Из памяти</h3><p>Если фильм сохранён в памяти. Работает даже без интернета. Сохранён целиком — Чима сама включит его отсюда, выбирать ничего не нужно.</p><span class="tag">сразу</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="save">
+  <div class="wrap">
+    <div class="center">
+      <h2>Сохранить фильм</h2>
+      <p class="lead">На экране фильма нажмите <span class="pill">💾 Сохранить</span> и выберите куда.</p>
+    </div>
+    <div class="save">
+      <div class="opt"><img src="img/saved.webp" alt="" loading="lazy"><div><h3>💾 В памяти</h3><p>Фильм скачается целиком и останется, пока вы его не удалите. Смотрите без интернета — «Из памяти» или во вкладке «Сохранено». Сохранили только часть серий — потом нажмите <span class="pill">💾 Сохранить остальные серии</span>, готовые можно смотреть сразу. Мало памяти? Подключите флешку и в ⚙ Настройках нажмите «Выбрать папку для загрузок».</p></div></div>
+      <div class="opt"><img src="img/library.webp" alt="" loading="lazy"><div><h3>☁ В облако</h3><p>Фильм хранится на сервере Чимы и быстро открывается на любом вашем телевизоре. Лежит 3 дня после последнего просмотра, потом удаляется сам. У каждого своё место — обычно 20 ГБ; сколько занято, видно в окне «Сохранить» и в боте.</p></div></div>
+    </div>
+    <p class="small center">Сохранить можно и прямо из бота, не подходя к телевизору: кнопка <span class="pill">💾 Сохранить на телевизор</span> у фильма — телевизор скачает его в память сам, даже если ЧимаТВ закрыто (лишь бы телевизор был включён), а Чима напишет, когда всё готово. В облако — кнопкой <span class="pill">☁ Сохранить в облако</span> после добавления фильма; облако включает хозяин.</p>
+  </div>
+</section>
+
+<section id="help">
+  <div class="wrap">
+    <div class="center">
+      <h2>Что-то не получается?</h2>
+      <p class="lead">Не страшно. Вот что обычно помогает.</p>
+    </div>
+    <div class="faq">
+      <div class="qa"><img src="img/offline.webp" alt="" loading="lazy"><div><h3>Пишет «нет связи»</h3><p>Проверьте, что на телевизоре есть интернет. Потом нажмите ⚙ и «Проверить обновления» — я сам всё перепроверю.</p></div></div>
+      <div class="qa"><img src="img/sleep.webp" alt="" loading="lazy"><div><h3>Список пустой</h3><p>Значит, вы ещё ничего не добавили. Найдите фильм через Telegram, ВКонтакте или кнопкой «🔍 Найти» на телевизоре.</p></div></div>
+      <div class="qa"><img src="img/settings.webp" alt="" loading="lazy"><div><h3>Фильм тормозит или не включается</h3><p>Вернитесь к фильму и выберите другой вариант в «Откуда смотреть» — чаще всего выручает «☁ С облака». А на дорогу фильм лучше заранее сохранить в памяти.</p></div></div>
+      <div class="qa"><img src="img/tv.webp" alt="" loading="lazy"><div><h3>Мало места на телевизоре</h3><p>Подключите флешку и откройте ⚙ Настройки: «Выбрать папку для загрузок» — для сохранённых фильмов, «Папка для буфера» — для просмотра без сохранения.</p></div></div>
+      <div class="qa"><img src="img/update.webp" alt="" loading="lazy"><div><h3>Как обновить приложение?</h3><p>Ничего делать не нужно: когда выйдет новая версия, телевизор сам предложит обновиться. Просмотренное не потеряется.</p></div></div>
+      <div class="qa"><img src="img/error.webp" alt="" loading="lazy"><div><h3>Ничего не помогает</h3><p>Напишите в поддержку: в боте <span class="pill">❓ Помощь</span> → «✉️ Написать в поддержку». Или прямо с телевизора: ⚙ → «✉️ Написать в поддержку» — Чима сам расскажет, что происходило на экране. Ответ придёт в переписку с Чимой.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="final">
+      <img src="img/avatar.webp" alt="">
+      <div>
+        <h2>Ну что, смотрим?</h2>
+        <p class="lead">Напишите мне — и начнём.</p>
+        <div class="btns">
+          <a class="btn btn-tg" href="https://t.me/cheematvbot">💬 Telegram</a>
+          <a class="btn btn-vk" href="https://vk.me/club242499093">💬 ВКонтакте</a>
+          <a class="btn btn-gold" href="https://github.com/papapa228/CheemaTV/releases/latest/download/ChimaTV.apk">📺 Приложение для ТВ</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>ЧимаТВ · домашний кинотеатр для своих · названия и постеры — TMDB</footer>
+</body>
+</html>
